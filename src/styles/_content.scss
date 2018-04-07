@@ -1,0 +1,16 @@
+.text-container {
+    display: block;
+    position: relative;
+    background: $color-off-white;
+    font-size: 1rem;
+    font-family: ADAM;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 15px 40px;
+    box-shadow: 0 5px 5px #{'rgba(0, 0, 0, 20%)'}, -5px 0 5px #{'rgba(0, 0, 0, 20%)'}, 5px 0 5px #{'rgba(0, 0, 0, 20%)'};
+}
+
+.content-section {
+    margin: 35px auto;
+    width: 100%;
+}

@@ -1,0 +1,37 @@
+$color-primary-very-light: #ff9494;
+$color-primary-light: #ff6969;
+$color-primary-base: #fc4646;
+$color-primary-dark: #ee1919;
+$color-primary-very-dark: #b70a0a;
+
+$color-off-white: #f1f1f1;
+$color-gray-light: #d4d4d4;
+$color-gray-base: #c7c7c7;
+$color-gray-dark: #b8b8b8;
+$color-gray-very-dark: #8a8a8a;
+
+$color-banner: #f0a095;
+
+$color-discord: #7289da;
+$color-twitch: #4b367c;
+$color-twitter: #1da1f2;
+$color-youtube: hsl(3, 81.8%, 49.6%);
+
+$header-icons: (
+  'discord': $color-discord,
+  'twitch': $color-twitch,
+  'twitter': $color-twitter,
+  'youtube': $color-youtube,
+);
+
+$grid-column-count: 12;
+$grid-gap: 20px;
+$grid-breakpoints: (
+  xs: (max: 559px, width: 100%),
+  sm: (min: 560px, max: 939px, width: (460px + $grid-gap)),
+  md: (min: 940px, max: 1439px, width: (640px + $grid-gap)),
+  lg: (min: 1440px, max: 1919px, width: (940px + $grid-gap)),
+  xl: (min: 1920px, width: (1420px + $grid-gap))
+);
+
+@import './media-helper';
