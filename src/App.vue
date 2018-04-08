@@ -19,7 +19,7 @@
             <section class="content-section" id="twitch-live">
                 <tt-banner>Livestream</tt-banner>
 
-                <div class="player-wrapper">
+                <!--div class="player-wrapper">
                     <iframe
                         class="player"
                         src="https://player.twitch.tv/?channel=themeathon"
@@ -27,7 +27,14 @@
                         allowfullscreen="true"
                         scrolling="no"
                     ></iframe>
-                </div>
+                </div -->
+            </section>
+        </div>
+
+        <div class="row">
+            <section class="content-section" id="schedule">
+                <tt-banner>Schedule</tt-banner>
+                <tt-schedule></tt-schedule>
             </section>
         </div>
     </main>
@@ -37,7 +44,7 @@
 <script>
 export default {
   name: 'App'
-}
+};
 </script>
 
 <style lang="scss">
