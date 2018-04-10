@@ -2,18 +2,46 @@
     <table v-if="!loading">
         <thead>
             <tr>
-                <th v-for="(name, index) in columnNames" :key="index">{{ name }}</th>
+                <th class="scheduled">Scheduled</th>
+                <th class="time">Estimate</th>
+                <th v-for="(name, index) in columns" :key="index" :class="'data data-' + index">{{ name }}</th>
+                <th class="last"></th>
             </tr>
         </thead>
-        <tbody>
-            <template v-for="(rows, day, dayIndex) in days">
-                <tr class="day-seperator" :key="'seperator-' + dayIndex">
-                    <td :colspan="columnNames.length">{{ rows[0].scheduled | dateString }}</td>
+        <tbody v-for="(rows, day, dayIndex) in days" :key="dayIndex">
+            <tr class="day-seperator">
+                <td :colspan="columns.length + 2">{{ rows[0].scheduled | dateString }}</td>
+            </tr>
+            <template v-for="(row, rowIndex) in rows">
+                <tr class="run-row" :key="'row-' + dayIndex + '-' + rowIndex">
+                    <td class="scheduled">{{ row.scheduled | dateTime }}</td>
+                    <td class="time">{{ row.length_t | time }}</td>
+                    <td
+                        v-for="(data, dataIndex) in row.data"
+                        :key="dataIndex"
+                        v-html="data"
+                        :class="'data data-' + dataIndex"
+                    ></td>
+                    <td class="last">
+                        <button class="expand-button" role="button" @click="toggleRow(rowIndex)">expand</button>
+                    </td>
+
                 </tr>
-                <tr v-for="(row, rowIndex) in rows" :key="'row-' + dayIndex + '-' + rowIndex">
-                    <td>{{ row.scheduled | dateTime }}</td>
-                    <td class="right">{{ row.length_t | time }}</td>
-                    <td v-for="(data, dataIndex) in row.data" :key="dataIndex" v-html="data"></td>
+                <tr class="mobile-row" :key="'mobile-row-' + dayIndex + '-' + rowIndex" :class="{ expanded: isExpanded(rowIndex) }">
+                    <td :colspan="columns.length + 2">
+                        <p>
+                            <span class="title">Estimate</span>
+                            <span class="value">{{ row.length_t | time }}</span>
+                        </p>
+                        <p
+                            v-for="(data, dataIndex) in row.data"
+                            :key="dataIndex"
+                            v-if="dataIndex > 0"
+                        >
+                            <span class="title">{{ columns[dataIndex] }}</span>
+                            <span class="value" v-html="data"></span>
+                        </p>
+                    </td>
                 </tr>
             </template>
         </tbody>
@@ -51,14 +79,15 @@ export default {
         return {
             loading: true,
             errored: false,
-            columnNames: [],
+            columns: [],
             days: {},
+            expandedRows: [],
         };
     },
     methods: {
         handleResponse(res) {
-            this.columnNames = ['Scheduled', 'Estimate', ...res.data.columns];
-            const items = res.data.items.map(this.normalizeRow);
+            this.columns = res.data.columns;
+            const items = res.data.items.slice(0).map(this.normalizeRow);
             this.days = this.groupByDates(items);
             this.loading = false;
         },
@@ -78,6 +107,17 @@ export default {
                 dates[date] = items;
             });
             return dates;
+        },
+        isExpanded(index) {
+            return this.expandedRows.indexOf(index) !== -1;
+        },
+        toggleRow(rowIndex) {
+            const index = this.expandedRows.indexOf(rowIndex);
+            if (index === -1) {
+                this.expandedRows.push(rowIndex);
+            } else {
+                this.expandedRows.splice(index, 1);
+            }
         }
     },
     filters: {
@@ -139,30 +179,110 @@ table {
     background: $color-off-white;
     box-shadow: 0 5px 5px #{'rgba(0, 0, 0, 20%)'}, -5px 0 5px #{'rgba(0, 0, 0, 20%)'}, 5px 0 5px #{'rgba(0, 0, 0, 20%)'};
     border-collapse: collapse;
+    font-family: 'ADAM', sans-serif;
 
     td {
-        font-family: 'ADAM', sans-serif;
         box-sizing: border-box;
         font-size: 1rem;
         padding: 15px 20px;
     }
+
     th {
-        font-family: 'ADAM', sans-serif;
         box-sizing: border-box;
         text-align: center;
         font-size: 1.25rem;
         padding: 10px 15px;
     }
-    .right {
+
+    td.time {
         text-align: right;
     }
-    tr.day-seperator {
-        background: $color-primary-very-light;
 
-        td {
-            text-align: center;
+    .day-seperator {
+        background: $color-primary-very-light;
+        text-align: center;
+    }
+
+    .last,
+    .hidden,
+    .mobile-row {
+        display: none;
+    }
+
+    .expand-button {
+        padding: 5px 10px 9px;
+        background: $color-off-white;
+        border: 1px solid $color-primary-very-dark;
+        font-family: 'ADAM', sans-serif;
+        transition: 300ms;
+        cursor: pointer;
+
+        &:hover {
+            background: darken($color-off-white, 5%);
         }
     }
+
+    .mobile-row {
+        .title {
+            color: $color-primary-very-dark;
+
+            &::after {
+                display: inline-block;
+                content: ':';
+                color: #000;
+            }
+        }
+
+        .value {
+            display: block;
+            margin-left: 15px;
+            margin-top: 10px;
+
+            p {
+                margin: 0;
+            }
+        }
+    }
+
+    @include media-down('md') {
+        td {
+            font-size: 0.9rem;
+            padding: 10px;
+        }
+
+        th {
+            font-size: 1.05rem;
+            padding: 10px;
+        }
+    }
+
+    @include media-down('sm') {
+        .last,
+        .last {
+            display: table-cell;
+        }
+
+        .time,
+        .data {
+            display: none;
+        }
+
+        .data-0 {
+            display: table-cell;
+        }
+
+        tr.mobile-row.expanded {
+            display: table-row;
+        }
+    }
+
+    tr.run-row:nth-child(4n) {
+        &,
+        & + .mobile-row {
+            background: darken($color-off-white, 5%);
+        }
+    }
+
     thead {
         background: $color-primary-base;
     }
