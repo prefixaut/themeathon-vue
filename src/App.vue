@@ -1,8 +1,9 @@
 <template>
   <div id="app">
     <tt-header></tt-header>
+
     <main class="container">
-        <div class="row">
+        <div class="row intro-row">
             <section class="content-section" id="who-are-we">
                 <tt-banner>Who are we?</tt-banner>
                 <div class="text-container">
@@ -15,23 +16,23 @@
             </section>
         </div>
 
-        <div class="row player-row">
+        <div v-if="streamOnline" class="row player-row">
             <section class="content-section" id="twitch-live">
                 <tt-banner>Livestream</tt-banner>
 
-                <!--div class="player-wrapper">
+                <div class="player-wrapper">
                     <iframe
                         class="player"
-                        src="https://player.twitch.tv/?channel=themeathon"
+                        :src="'https://player.twitch.tv/?channel=' + channel"
                         frameborder="0"
                         allowfullscreen="true"
                         scrolling="no"
                     ></iframe>
-                </div -->
+                </div>
             </section>
         </div>
 
-        <div class="row">
+        <div class="row schedule-row">
             <section class="content-section" id="schedule">
                 <tt-banner>Schedule</tt-banner>
                 <tt-schedule></tt-schedule>
@@ -43,7 +44,28 @@
 
 <script>
 export default {
-  name: 'App'
+    created() {
+        fetch('https://decapi.me/twitch/uptime/' + this.channel).then(res => {
+            if (!res.ok) {
+                return;
+            }
+            return res.text();
+        }).then(body => {
+            if (!body) {
+                return;
+            }
+            const end = 'offline';
+            if (body.length > end.length && body.substr(-end.length) !== end) {
+                this.streamOnline = true;
+            }
+        });
+    },
+    data() {
+        return {
+            channel: process.env.TWITCH_CHANNEL,
+            streamOnline: false,
+        };
+    }
 };
 </script>
 
