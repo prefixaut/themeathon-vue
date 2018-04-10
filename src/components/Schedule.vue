@@ -1,5 +1,5 @@
 <template>
-    <table v-if="!loading">
+    <table class="schedule" v-if="!loading">
         <thead>
             <tr>
                 <th class="scheduled">Scheduled</th>
@@ -174,7 +174,7 @@ export default {
 <style lang="scss">
 @import '../styles/config';
 
-table {
+table.schedule {
     width: 100%;
     background: $color-off-white;
     box-shadow: 0 5px 5px #{'rgba(0, 0, 0, 20%)'}, -5px 0 5px #{'rgba(0, 0, 0, 20%)'}, 5px 0 5px #{'rgba(0, 0, 0, 20%)'};
@@ -276,10 +276,21 @@ table {
         }
     }
 
+    tr.run-row,
+    tr.mobile-row {
+        &:hover {
+            background: darken($color-off-white, 3%);
+        }
+    }
+
     tr.run-row:nth-child(4n) {
         &,
         & + .mobile-row {
             background: darken($color-off-white, 5%);
+
+            &:hover {
+                background: darken($color-off-white, 8%);
+            }
         }
     }
 
