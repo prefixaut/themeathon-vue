@@ -38,6 +38,13 @@
                 <tt-schedule></tt-schedule>
             </section>
         </div>
+
+        <div class="row team-row">
+            <section class="content-section" id="team">
+                <tt-banner>Team</tt-banner>
+                <tt-team></tt-team>
+            </section>
+        </div>
     </main>
   </div>
 </template>

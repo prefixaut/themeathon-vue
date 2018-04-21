@@ -71,4 +71,14 @@
         }
     }
 }
+
+@include media-down('xs') {
+    .banner {
+        .content {
+            span {
+                font-size: 26px;
+            }
+        }
+    }
+}
 </style>
