@@ -1,5 +1,6 @@
 <template>
-    <table class="schedule" v-if="!loading">
+    <div style="display: none;" v-if="!scheduleId"></div>
+    <table class="schedule" v-else-if="!loading">
         <thead>
             <tr>
                 <th class="scheduled">Scheduled</th>
@@ -65,7 +66,11 @@ const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', '
 
 export default {
     created() {
-        jsonp('https://horaro.org/-/api/v1/schedules/71111yc1eadakv7a29', null, (err, res) => {
+        if (!this.scheduleId) {
+            return;
+        }
+
+        jsonp('https://horaro.org/-/api/v1/schedules/' + this.scheduleId, null, (err, res) => {
             if (err) {
                 this.errored = true;
                 this.loading = false;
@@ -77,6 +82,7 @@ export default {
     },
     data() {
         return {
+            scheduleId: process.env.SCHEDULE_ID,
             loading: true,
             errored: false,
             columns: [],
