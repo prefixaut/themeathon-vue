@@ -191,6 +191,7 @@ table.schedule {
         box-sizing: border-box;
         font-size: 1rem;
         padding: 15px 20px;
+        word-break: break-all;
     }
 
     th {
@@ -222,6 +223,7 @@ table.schedule {
         font-family: 'ADAM', sans-serif;
         transition: 300ms;
         cursor: pointer;
+        word-break: initial;
 
         &:hover {
             background: darken($color-off-white, 5%);
